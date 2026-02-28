@@ -46,7 +46,7 @@ const postSlice = createSlice({
   reducers: {
     postAdded: {
       reducer: (state, action) => {
-        state.posts.push(action.payload)
+        postAdapter.addOne(state, action.payload)
       },
       prepare: (title, content, userId) => {
         return {
@@ -70,13 +70,7 @@ const postSlice = createSlice({
       }
     },
     postRemoved: (state, action) => {
-      let index_remove = 0
-      state.posts.find((item, index) => {
-        if (item.id === action.payload) {
-          index_remove = index
-        }
-      })
-      state.posts.splice(index_remove, 1)
+      postAdapter.removeOne(state, action.payload)
     },
     reactionAdded: {
       reducer: (state, action) => {
@@ -114,9 +108,7 @@ const postSlice = createSlice({
         state.error = action.error.message
       })
       .addCase(addNewPost.fulfilled, (state, action) => {
-        // 我们可以直接将新的帖子对象添加到我们的帖子数组中
-        console.log('haha')
-        postAdapter.addOne(action.payload)
+        postAdapter.addOne(state, action.payload)
       })
   },
   //   selectors: {

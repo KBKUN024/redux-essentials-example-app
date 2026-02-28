@@ -2,34 +2,31 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addNewPost } from '../posts/postSlice'
 import { selectAllUsers } from '../users/usersSlice'
+import { useAddNewPostMutation } from '../api/apiSlice'
 
 export function AddPostForm() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [userId, setUserId] = useState('')
-  const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  const [addNewPost, { isLoading }] = useAddNewPostMutation()
 
   const users = useSelector(selectAllUsers)
-  const dispatch = useDispatch()
 
   const onTitleChanged = (e) => setTitle(e.target.value)
   const onContentChanged = (e) => setContent(e.target.value)
   const onAuthorChanged = (e) => setUserId(e.target.value)
 
-  const canSave = [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+  const canSave = [title, content, userId].every(Boolean) && !isLoading
 
   const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus('pending')
-        const res = await dispatch(addNewPost({ title, content, user: userId })).unwrap() // unwrap()作用？
+        const res = await addNewPost({ title, content, user: userId }).unwrap()
         console.log('res:', res)
         setTitle('')
         setContent('')
       } catch (error) {
         console.log('Failed to save the post: ', error)
-      } finally {
-        setAddRequestStatus('idle')
       }
     }
   }
@@ -43,7 +40,6 @@ export function AddPostForm() {
   return (
     <section>
       <h2>添加新文章</h2>
-      {addRequestStatus}
       <form>
         <label htmlFor="postTitle">文章标题:</label>
         <input type="text" id="postTitle" value={title} name="postTitle" onChange={onTitleChanged} />

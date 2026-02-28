@@ -145,7 +145,7 @@ section {
 }
 
 .post-excerpt {
-  padding: .5rem;
+  padding: 0.5rem;
   border: 1px solid rgb(177, 174, 174);
   border-radius: 7px;
   position: relative;
@@ -162,6 +162,8 @@ section {
 
 .posts-container.disabled {
   opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
 }
 
 .post-excerpt h3 {
@@ -185,6 +187,7 @@ p.post-content {
   border-radius: 4px;
   font-weight: 700;
   padding: 0.75rem 1.5rem;
+  user-select: none;
 }
 
 button:disabled,
