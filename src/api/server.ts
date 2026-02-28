@@ -12,13 +12,13 @@ const POSTS_PER_USER = 3
 const RECENT_NOTIFICATIONS_DAYS = 7
 
 // Add an extra delay to all endpoints, so loading spinners show up.
-const ARTIFICIAL_DELAY_MS = 2000
+const ARTIFICIAL_DELAY_MS = 1000
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-/* RNG setup */
+/* RNG (Random Number Generator) setup */
 
 // Set up a seeded random number generator, so that we get
 // a consistent set of users / entries each time the page loads.
@@ -54,7 +54,7 @@ const firstFromArray = <T>(items: T | T[] | readonly T[]) => {
   return ([] as T[]).concat(items)[0]
 }
 
-type ReactionName = 'thumbsUp' | 'tada' | 'heart' | 'rocket' | 'eyes'
+type ReactionName = 'thumbsUp' | 'hooray' | 'heart' | 'rocket' | 'eyes'
 
 /* MSW Data Model Setup */
 
@@ -85,7 +85,7 @@ export const db = factory({
   reaction: {
     id: primaryKey(nanoid),
     thumbsUp: Number,
-    tada: Number,
+    hooray: Number,
     heart: Number,
     rocket: Number,
     eyes: Number,
