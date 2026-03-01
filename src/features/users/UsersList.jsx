@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { selectAllUsers } from '../users/usersSlice'
 import { Link } from 'react-router-dom'
-import { useGetUsersQuery } from '../api/apiSlice'
+import { useGetUsersQuery } from '../users/usersSlice'
 import { Spinner } from '../../components/Spinner'
 
 export function UsersList() {

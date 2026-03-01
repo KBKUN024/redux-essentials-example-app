@@ -1,24 +1,26 @@
-import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
-import { selectUserById, selectUsersStatus } from './usersSlice'
-import { selectAllPosts } from '../posts/postSlice'
-import { createSelector } from '@reduxjs/toolkit'
-
-// 定义在组件外部，createSelector 会缓存上一次的计算结果
-// 只有当 allPosts 或 userId 真正变化时才重新计算，返回稳定的数组引用
-const selectPostsByUser = createSelector(
-  selectAllPosts,
-  (state, userId) => userId,
-  (allPosts, userId) => allPosts.filter((post) => post.user === userId),
-)
+import { useGetUsersQuery } from './usersSlice'
+import { useGetPostsQuery } from '../api/apiSlice'
 
 export function UserPage() {
   const { userId } = useParams()
-  const usersStatus = useSelector(selectUsersStatus)
-  const user = useSelector((state) => selectUserById(state, userId))
-  const postsForUser = useSelector((state) => selectPostsByUser(state, userId))
 
-  if (usersStatus === 'idle' || usersStatus === 'loading') {
+  // 用 selectFromResult 从查询结果中派生数据，避免不必要的重渲染
+  const { user, isLoading: isUsersLoading } = useGetUsersQuery(undefined, {
+    selectFromResult: ({ data = [], isLoading }) => ({
+      user: data.find((u) => u.id === userId),
+      isLoading,
+    }),
+  })
+
+  const { postsForUser, isLoading: isPostsLoading } = useGetPostsQuery(undefined, {
+    selectFromResult: ({ data = [], isLoading }) => ({
+      postsForUser: data.filter((post) => post.user === userId),
+      isLoading,
+    }),
+  })
+
+  if (isUsersLoading || isPostsLoading) {
     return (
       <section>
         <h2>Loading...</h2>
