@@ -7,10 +7,14 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     getPosts: builder.query({
       query: () => '/posts',
-      providesTags: ['Post'],
+      providesTags: (result = [], error, arg) => [
+        { type: 'Post', id: 'LIST' },
+        ...result.map(({ id }) => ({ type: 'Post', id })),
+      ],
     }),
     getPost: builder.query({
       query: (postId) => `/posts/${postId}`, // 自定义基于参数的查询请求
+      providesTags: (result, error, arg) => [{ type: 'Post', id: arg }],
     }),
     addNewPost: builder.mutation({
       query: (initialPost) => ({
@@ -18,9 +22,17 @@ export const apiSlice = createApi({
         method: 'POST',
         body: initialPost,
       }),
-      invalidatesTags: ['Post'],
+      invalidatesTags: [{ type: 'Post', id: 'LIST' }],
+    }),
+    editPost: builder.mutation({
+      query: (post) => ({
+        url: `/posts/${post.id}`,
+        method: 'PATCH',
+        body: post,
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: arg.id }],
     }),
   }),
 })
 
-export const { useGetPostsQuery, useGetPostQuery, useAddNewPostMutation } = apiSlice
+export const { useGetPostsQuery, useGetPostQuery, useAddNewPostMutation, useEditPostMutation } = apiSlice

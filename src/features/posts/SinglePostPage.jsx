@@ -25,7 +25,7 @@ export function SinglePostPage() {
         </div>
         <p className="post-content">{post.content}</p>
         <ReactionButtons post={post} />
-        <Link to={`/editPost/${post.id}`} className="button">
+        <Link to={`/edit-post/${post.id}`} className="button">
           Edit Post
         </Link>
       </article>
